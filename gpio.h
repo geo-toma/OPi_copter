@@ -13,8 +13,8 @@
 #include <sys/stat.h>
 
 // Map and Unmap function
-int map_peripheral(struct gpio_pin *p); // map the physical address to virtual address
-void unmap_peripheral(struct gpio_pin *p);
+void map_peripheral(struct ALLWINNER_peripheral *p); // map the physical address to virtual address
+void unmap_peripheral(struct ALLWINNER_peripheral *p);
 
 #define GPIO_BASE	0x01C20800
 #define BLOCK_SIZE	(4*1024)
@@ -32,12 +32,9 @@ struct ALLWINNER_peripheral gpio = {GPIO_BASE}; // Only the phy_addr is specify
 
 
 // Try to map virtual pointer variable on physical register address
-#if map_peripheral(&gpio) == 0
-	#define SUCCESS_GPIO_MAPPED
-#endif
+void init_gpio(){map_peripheral(&gpio);}
 
 
-#ifdef SUCCESS_GPIO_MAPPED
 enum inputMode
 {
 	PULLUP,
@@ -83,5 +80,4 @@ void input_mode(struct pin p, inputMode mode);
 void gpio_write(struct pin p, pinState state);
 pinState gpio_read(struct pin p);
 
-#endif
 #endif
