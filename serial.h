@@ -64,6 +64,8 @@ class Serial
 		bool fifo;
 		bool receiveErr;
 
+		struct uartPins pins;
+
 		void setBaud(BAUD baud);
 
 	public :
@@ -79,10 +81,10 @@ class Serial
 
 		bool getReceiveErr(){ // Clear receiveErr once readed
 			if(receiveErr){
-				receiveErr = FALSE;
-				return TRUE;
+				receiveErr = 0;
+				return 1;
 			}
-			return FALSE;
+			return 0;
 		}
 
 };

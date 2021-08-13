@@ -1,8 +1,13 @@
 /*** Georges N'MENA **August 2021**  ***/
 /***      nmenageorges@gmail.com     ***/
 
-#include "gpio.h"
 #include <stdlib.h>
+
+#include "gpio.h"
+
+// GPIO global variable
+struct ALLWINNER_peripheral gpio = {GPIO_BASE}; // Only the phy_addr is specify
+
 
 void map_peripheral(struct ALLWINNER_peripheral *p){
 	// Open /dev/mem system memory file or /dev/gpiomem gpio memory file for security
@@ -35,6 +40,15 @@ void unmap_peripheral(struct ALLWINNER_peripheral *p){
 	close(p->mem_fld);
 	#ifdef SUCCESS_GPIO_MAPPED
 	#undef SUCCESS_GPIO_MAPPED
+	#endif
+}
+
+// Try to map virtual pointer variable on physical register address
+void init_gpio(){
+	map_peripheral(&gpio);
+	if(gpio.map == MAP_FAILED) return;
+	#ifndef SUCCESS_GPIO_MAPPED
+	#define SUCCESS_GPIO_MAPPED
 	#endif
 }
 

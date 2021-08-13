@@ -2,6 +2,7 @@
 /***      nmenageorges@gmail.com     ***/
 
 #include "serial.h"
+#include "gpio.h"
 
 // Serial contructor
 Serial::Serial(UART m_uart){
@@ -23,7 +24,6 @@ Serial::Serial(UART m_uart){
 
 void Serial::init(bool fifo_mode, BAUD s_baud){
 	fifo = fifo_mode;
-	struct uartPins pins;
 	set_uartPins(&pins, uart);
 	/*Orange pi PC (Allwinner H3) have all uart pin config in one port*/
 
@@ -65,7 +65,7 @@ void Serial::init(bool fifo_mode, BAUD s_baud){
 		*(base_reg + UART_IER) |= 0x8F;
 		// Configure fifo
 		*(base_reg + UART_FCR) &= ~(0xFF);
-		if(fifo_mode and uart =! UART::UART3)
+		if(fifo_mode and uart != UART::UART3)
 			*(base_reg + UART_FCR) |= 0x0F;
 		// Setup line control register
 		*(base_reg + UART_LCR) &= ~(3<<6); // Set DLAB and BC to 0
@@ -112,6 +112,7 @@ void Serial::line_config(int8_t conf){
 }
 
 void Serial::close(){
+	struct pin p = pins.TX_pin; // Select the first pin
 	// Config uart pin to input function (default function)
 	switch (uart){
 		case UART::UART1 :
@@ -144,20 +145,20 @@ bool Serial::write(int8_t data){
 	  )
 	{
 		*(base_reg + UART_THR) = data;
-		return TRUE;
+		return 1;
 	} else
-		return FALSE;
+		return 0;
 }
 
 int8_t Serial::read(){
-	receiveErr = FALSE;
+	receiveErr = 0;
 	if (*(base_reg + UART_LSR) & 0x1){ // Test data ready
 		
 		if( // Test error in receive data
 			(not(fifo) || (*(base_reg + UART_LSR) & 0x1<<7)) &&
 			(not(*(base_reg + UART_LSR) & 0x7<<1))
-		)receiveErr = FALSE;
-		else receiveErr = TRUE;
+		)receiveErr = 0;
+		else receiveErr = 1;
 
 		return (*(base_reg + UART_RBR) & 0xff);	
 	}	
