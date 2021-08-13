@@ -25,9 +25,6 @@ void map_peripheral(struct ALLWINNER_peripheral *p){
 		perror("mmap");
 		return;
 	}
-	#ifndef SUCCESS_GPIO_MAPPED
-	#define SUCCESS_GPIO_MAPPED
-	#endif
 	p->vir_addr = (volatile unsigned int*)p->map;
 
 }
@@ -59,17 +56,17 @@ void gpio_mode(struct pin p, pinMode mode, int8_t alt){
 	}
 }
 
-void input_mode(struct pin p, inputMode mode){
+void pull_mode(struct pin p, pullMode mode){
 	*(Pn_PUL(p.port, p.num)) &= ~(3<<(2*(p.num%16)));
 	switch(mode){
-		case inputMode::NONE :
+		case pullMode::NONE :
 			// Bits already set to 00
 			break;
-		case inputMode::PULLUP :
+		case pullMode::PULLUP :
 			// Set bits to 01
 			*(Pn_PUL(p.port, p.num)) |= (1<<(2*(p.num%16)));
 			break;
-		case inputMode::PULLDOWN :
+		case pullMode::PULLDOWN :
 			// Set bits to 10
 			*(Pn_PUL(p.port, p.num)) |= (2<<(2*(p.num%16)));
 			break;

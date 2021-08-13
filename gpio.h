@@ -32,10 +32,16 @@ struct ALLWINNER_peripheral gpio = {GPIO_BASE}; // Only the phy_addr is specify
 
 
 // Try to map virtual pointer variable on physical register address
-void init_gpio(){map_peripheral(&gpio);}
+void init_gpio(){
+	map_peripheral(&gpio);
+	if(gpio.map == MAP_FAILED) return;
+	#ifndef SUCCESS_GPIO_MAPPED
+	#define SUCCESS_GPIO_MAPPED
+	#endif
+}
 
 
-enum inputMode
+enum pullMode
 {
 	PULLUP,
 	PULLDOWN,
@@ -76,7 +82,7 @@ struct pin
 };
 
 void gpio_mode(struct pin p, pinMode mode, int8_t alt);
-void input_mode(struct pin p, inputMode mode);
+void pull_mode(struct pin p, pullMode mode);
 void gpio_write(struct pin p, pinState state);
 pinState gpio_read(struct pin p);
 
