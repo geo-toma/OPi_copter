@@ -22,6 +22,7 @@ Serial::Serial(UART m_uart){
 	base_reg = (uart_p.map == MAP_FAILED)? 0 : uart_p.vir_addr;
 }
 
+#ifdef SUCCESS_GPIO_MAPPED
 void Serial::init(bool fifo_mode, BAUD s_baud){
 	fifo = fifo_mode;
 	set_uartPins(&pins, uart);
@@ -177,3 +178,4 @@ int32_t Serial::readByte(int8_t byte){
 	}
 	return data;
 }
+#endif
