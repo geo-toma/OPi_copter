@@ -2,7 +2,6 @@
 /***      nmenageorges@gmail.com     ***/
 
 #include "serial.h"
-#include "gpio.h"
 
 // Serial contructor
 Serial::Serial(UART m_uart){
@@ -24,6 +23,7 @@ Serial::Serial(UART m_uart){
 
 #ifdef SUCCESS_GPIO_MAPPED
 void Serial::init(bool fifo_mode, BAUD s_baud){
+	if base_reg == 0 return;
 	fifo = fifo_mode;
 	set_uartPins(&pins, uart);
 	/*Orange pi PC (Allwinner H3) have all uart pin config in one port*/
@@ -82,6 +82,7 @@ void Serial::init(bool fifo_mode, BAUD s_baud){
 }
 
 void Serial::setBaud(BAUD baud){
+	if base_reg == 0 return;
 	// Set DLAB (LCR[7]) to 1
 	*(base_reg + UART_LCR) |= 1<<7;
 	// Clear BaudDIV LSB and MSB
@@ -99,6 +100,7 @@ void Serial::setBaud(BAUD baud){
 }
 
 void Serial::line_config(int8_t conf){
+	if base_reg == 0 return;
 	if(conf < 0x3F){ // be sure that we don't touch other bit
 		// Parity, Stop bit and data lenght config take only 6 bits
 		*(base_reg + UART_LCR) &= ~0x3F; // Clear first the bits
@@ -130,6 +132,7 @@ void Serial::close(){
 }
 
 int8_t Serial::available(){
+	if base_reg == 0 return 0;
 	if (not(*(base_reg + UART_LSR) & 0x1))
 		return 0;
 	else if(not(fifo))
@@ -139,6 +142,7 @@ int8_t Serial::available(){
 }
 
 bool Serial::write(int8_t data){
+	if base_reg == 0 return 0;
 	if(
 		not(*(base_reg + UART_LCR) & 0x1<<7) &&
 		(*(base_reg + UART_LSR) & 0x1<<5) &&
@@ -152,6 +156,7 @@ bool Serial::write(int8_t data){
 }
 
 int8_t Serial::read(){
+	if base_reg == 0 return 0;
 	receiveErr = 0;
 	if (*(base_reg + UART_LSR) & 0x1){ // Test data ready
 		
