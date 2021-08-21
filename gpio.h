@@ -18,8 +18,8 @@
 struct ALLWINNER_peripheral
 {
 	unsigned long phy_addr; // Physical address in memory
-	int mem_fld; // System memory file descriptor (return by open /dev/mem file)
-	void *map; // Function mapped physical and virtual address
+	//int mem_fld; // System memory file descriptor (return by open /dev/mem file)
+	//void *map; // Function mapped physical and virtual address
 	volatile unsigned int *vir_addr; // Peripheral's virtual address pointer
 };
 

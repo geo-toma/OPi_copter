@@ -10,28 +10,29 @@ struct ALLWINNER_peripheral gpio = {GPIO_BASE}; // Only the phy_addr is specify
 
 
 void map_peripheral(struct ALLWINNER_peripheral *p){
-	// Open /dev/mem system memory file or /dev/gpiomem gpio memory file for security
-	if ((p->mem_fld = open("/dev/mem", O_RDWR|O_SYNC)) < 0)
-	{
-		// Failed to open /dev/mem or /dev/gpiomem, try checking permission
-		return;
-	}
-	p->map = mmap(
-		NULL,
-		BLOCK_SIZE,
-		PROT_READ|PROT_WRITE,
-		MAP_SHARED,
-		p->mem_fld,
-		p->phy_addr
-		);
+	/*
+		// Open /dev/mem system memory file or /dev/gpiomem gpio memory file for security
+		if ((p->mem_fld = open("/dev/mem", O_RDWR|O_SYNC)) < 0)
+		{
+			// Failed to open /dev/mem or /dev/gpiomem, try checking permission
+			return;
+		}
+		p->map = mmap(
+			NULL,
+			BLOCK_SIZE,
+			PROT_READ|PROT_WRITE,
+			MAP_SHARED,
+			p->mem_fld,
+			p->phy_addr
+			);
 
-	if(p->map == MAP_FAILED)
-	{
-		perror("mmap");
-		return;
-	}
-	p->vir_addr = (volatile unsigned int*)p->map;
-
+		if(p->map == MAP_FAILED)
+		{
+			perror("mmap");
+			return;
+		}
+		p->vir_addr = (volatile unsigned int*)p->map;*/
+	
 }
 
 
